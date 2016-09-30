@@ -9,7 +9,7 @@ const bodyParser = require('body-parser')
 const app = express()
 
 app.use(bodyParser.urlencoded({extended: true}))
-
+app.use(express.static(path.join(__dirname, 'public')));
 let bagpipe = new Bagpipe(10)
 
 app.use(function(req, res, next) {
@@ -20,46 +20,46 @@ app.use(function(req, res, next) {
 })
 
 let count = 0
-let xlsUrl = './excels/test.xlsx'
+let xlsUrl = './excels/'
 let imgList = [] //存放图片url地址
 
-let downloadFile = function(src, index, callback){
-	request(src)
-		.pipe(fs.createWriteStream('./images/' + index + '.jpg'))
-		.on('close',_ => {
-			callback(null, index)
-		})
-}
 
-function searchList(imgList){
-	for(let i = 0, len = imgList.length; i < len; i++){
-		bagpipe.push(downloadFile,imgList[i],i,function(err,index){
-			count++;
-			console.log('count: ' + count)
-			console.log('[' + index + '.png] has been downloaded')
-			if(count === imgList.length){
-				console.log('All images have been downloaded')
-			}
-		})
+app.post('/getImg',(req,res) => {
+
+	let downloadFile = function(src, index, callback){
+		request(src)
+			.pipe(fs.createWriteStream('./images/' + index + '.jpg'))
+			.on('close',_ => {
+				callback(null, index)
+			})
 	}
-}
 
-function getImgList(xlsUrl){
-	let xlsData = xls.parse(xlsUrl)[0].data
-
-	for(let i=0,len=xlsData.length; i < len; i++){
-		imgList.push(xlsData[i][1])
+	function searchList(imgList){
+		for(let i = 0, len = imgList.length; i < len; i++){
+			bagpipe.push(downloadFile,imgList[i],i,function(err,index){
+				count++;
+				console.log('count: ' + count)
+				console.log('[' + index + '.png] has been downloaded')
+				if(count === len){
+					console.log('All images have been downloaded')
+					res.send('download finished')
+				}
+			})
+		}
 	}
-	searchList(imgList)
-}
 
-app.post('/upload',(req,res) => {
-	console.log(req.body)
-	console.log(req.files)
+	function getImgList(url){
+		let xlsData = xls.parse(url)[0].data
+
+		for(let i=0,len=xlsData.length; i < len; i++){
+			imgList.push(xlsData[i][1])
+		}
+		searchList(imgList)
+	}
+
+
+	getImgList(xlsUrl + req.body.fileName)
 })
-
-//getImgList(xlsUrl)
-
 
 module.exports = function(){
 	app.listen(3000, _ => {

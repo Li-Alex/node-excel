@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "electron app.js",
+    "package": "electron-packager ./app node-excel --ignore=node_modules/electron-* --platform=win32 --arch=x64 --out ./ --version 1.4.0 --overwrite asar=true",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -15,9 +16,9 @@
   "license": "ISC",
   "dependencies": {
     "bagpipe": "^0.3.5",
-    "body-parser": "^1.15.2",
     "electron": "^1.4.1",
     "express": "^4.14.0",
+    "jquery": "^3.1.1",
     "node-xlsx": "^0.7.2",
     "request": "^2.75.0"
   }
