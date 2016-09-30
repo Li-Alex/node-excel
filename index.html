@@ -6,24 +6,27 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
 </head>
 <body>
-	<div class="container">
-		<label for="fileName">输入文件名</label>
+	<div class="container" style="width:350px;margin-top: 150px;">
+		<label for="fileName">请输入文件名</label>
 		<input id="fileName" type="text" name="fileName" placeholder="请输入文件名.后缀名，如 test.xlsx">
-		<button id="submit" type="button" class="btn effect-wave light" style="float:right;">提交</button>
+		<button id="submit" type="button" class="btn waves-effect" style="float:right;">提交</button>
 		<div id="alertText"></div>
 	</div>
-
-	<script src="./node_modules/jquery/dist/jquery.min.js"></script>
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
 <script>
+	$(document).ready(function() {
+	    Materialize.updateTextFields();
+	})
 	$('#submit').click(_ => {
-		$('#alertText').html('正在下载')
+		$('#alertText').html('正在下载..下载完毕后这里的字会改变')
 		var fileName = $('#fileName').val()
 		$.ajax({
 			url: 'http://localhost:3000/getImg',
 			method: 'post',
 			data: {fileName: fileName},
 			success: data => {
+				$('#submit').attr('disabled',true)
 				$('#alertText').html('下载完毕')
 			}
 		})

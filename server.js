@@ -9,7 +9,6 @@ const bodyParser = require('body-parser')
 const app = express()
 
 app.use(bodyParser.urlencoded({extended: true}))
-app.use(express.static(path.join(__dirname, 'public')));
 let bagpipe = new Bagpipe(10)
 
 app.use(function(req, res, next) {
@@ -56,8 +55,7 @@ app.post('/getImg',(req,res) => {
 		}
 		searchList(imgList)
 	}
-
-
+	
 	getImgList(xlsUrl + req.body.fileName)
 })
 
