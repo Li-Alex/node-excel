@@ -51,7 +51,7 @@ app.post('/getImg',(req,res) => {
 		let xlsData = xls.parse(url)[0].data
 
 		for(let i=0,len=xlsData.length; i < len; i++){
-			imgList.push(xlsData[i][1])
+			xlsData[i][1] && imgList.push(xlsData[i][1])
 		}
 		searchList(imgList)
 	}
